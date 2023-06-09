@@ -1,0 +1,11 @@
+Package: chirp
+Title: A collection of tools to collect and process tweets in R 
+Version: 0.0.0.9000
+Authors@R: 
+    person("Moritz", "Pilarski", , "first.last@example.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0009-5063-0979"))
+Description: ...
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
