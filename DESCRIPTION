@@ -2,10 +2,39 @@ Package: chirp
 Title: A collection of tools to collect and process tweets in R 
 Version: 0.0.0.9000
 Authors@R: 
-    person("Moritz", "Pilarski", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "0009-0009-5063-0979"))
+    person(
+        given = "Moritz", family = "Pilarski", email = "first.last@example.com", 
+        role = c("aut", "cre"), comment = c(ORCID = "0009-0009-5063-0979")
+    )
 Description: ...
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Depends: R (>= 4.1.0)
+Imports: 
+    bit64,
+    burrr,
+    digest,
+    dplyr,
+    fs,
+    janitor,
+    jsonlite,
+    httr,
+    lubridate,
+    naptime,
+    purrr,
+    qs,
+    stringr,
+    readr,
+    rlang,
+    tibble,
+    tidyr,
+    tidyselect,
+    graphics,
+    methods
+Remotes: 
+    m-pilarski/burrr
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
