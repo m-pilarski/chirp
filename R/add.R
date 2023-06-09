@@ -2,7 +2,7 @@
 #'
 #' \code{add_tweet_is_convers_start} - Convert all Emojis to some ...
 #'
-#' @param .tweet_data_tidy ...
+#' @param .tweet_tidy_data ...
 #' @param .na_to_false ... \code{FALSE}
 #' @return \code{add_tweet_is_convers_start} - returns a ...
 #' @rdname add_tweet_is_convers_start
@@ -10,17 +10,17 @@
 #' @examples
 #' 1+1
 add_tweet_is_convers_start <- function(
-    .tweet_data_tidy, .na_to_false=FALSE
+    .tweet_tidy_data, .na_to_false=FALSE
 ){
   
   stopifnot(is.logical(.na_to_false) & length(.na_to_false) == 1)
   
-  if(nrow(.tweet_data_tidy) == 0){
-    return(dplyr::mutate(.tweet_data_tidy, tweet_is_convers_start = logical()))
+  if(nrow(.tweet_tidy_data) == 0){
+    return(dplyr::mutate(.tweet_tidy_data, tweet_is_convers_start = logical()))
   }
   
   .tweet_data_search <- dplyr::mutate(
-    .tweet_data_tidy, tweet_id_initial = tweet_id
+    .tweet_tidy_data, tweet_id_initial = tweet_id
   )
   .tweet_is_convers_start <- tibble::tibble(
     tweet_id_initial = unique(bit64::integer64(0L)), 
@@ -49,7 +49,7 @@ add_tweet_is_convers_start <- function(
         .tweet_id_vec = tweet_id_vec,
         .bearer_token=bearer_token
       ) |> 
-      prep_tweet_data_tidy() |> 
+      prep_tweet_tidy_data() |> 
       dplyr::inner_join(
         dplyr::select(.tweet_data_search, tweet_id, tweet_id_initial),
         by=c("tweet_reply_tweet_id"="tweet_id")
@@ -59,8 +59,8 @@ add_tweet_is_convers_start <- function(
     
   })
   
-  .tweet_data_tidy_mod <- 
-    .tweet_data_tidy |> 
+  .tweet_tidy_data_mod <- 
+    .tweet_tidy_data |> 
     dplyr::left_join(
       dplyr::rename(.tweet_is_convers_start, tweet_id = tweet_id_initial), 
       by="tweet_id"
@@ -70,7 +70,7 @@ add_tweet_is_convers_start <- function(
       TRUE ~ tweet_is_convers_start
     ))
   
-  return(.tweet_data_tidy_mod)
+  return(.tweet_tidy_data_mod)
   
 }
 

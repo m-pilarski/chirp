@@ -1,4 +1,4 @@
-tweet_data_tidy_skeleton <- tibble::tibble(
+tweet_tidy_data_skeleton <- tibble::tibble(
   tweet_id = bit64::integer64(),
   tweet_lang = character(),
   tweet_text = character(),

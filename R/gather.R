@@ -1,4 +1,4 @@
-gather_tweet_data_raw <- function(
+gather_tweet_raw_data <- function(
     .tweet_data_scope_grid, .fetch_fn, .storage_dir, .bearer_token, ...
 ){
   
@@ -32,15 +32,15 @@ gather_tweet_data_raw <- function(
       
       if(!fs::file_exists(..data_path)){
         
-        ..tweet_data_raw <- rlang::exec(
+        ..tweet_raw_data <- rlang::exec(
           .fetch_fn, !!!..filtering_pars, .bearer_token=.bearer_token
         )
         
         ..tweet_data_gathered <- tibble::tibble(
           tweet_data_endpoint = .fetch_endpoint,
           tweet_data_scope = list(..tweet_data_scope),
-          tweet_data_raw_path = ..data_path,
-          tweet_data_raw = list(..tweet_data_raw)
+          tweet_raw_data_path = ..data_path,
+          tweet_raw_data = list(..tweet_raw_data)
         )
         
         qs::qsave(..tweet_data_gathered, ..data_path)

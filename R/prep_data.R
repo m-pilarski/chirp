@@ -1,26 +1,26 @@
 #' bla
 #'
-#' \code{prep_tweet_data_tidy} - Convert all Emojis to some ...
+#' \code{prep_tweet_tidy_data} - Convert all Emojis to some ...
 #'
-#' @param .tweet_data_raw ...
+#' @param .tweet_raw_data ...
 #' @param .include_media_url ... \code{FALSE}
-#' @return \code{prep_tweet_data_tidy} - returns a ...
-#' @rdname prep_tweet_data_tidy
+#' @return \code{prep_tweet_tidy_data} - returns a ...
+#' @rdname prep_tweet_tidy_data
 #' @export
 #' @examples
 #' 1+1
-prep_tweet_data_tidy <- function(
-  .tweet_data_raw, .include_media_url=FALSE
+prep_tweet_tidy_data <- function(
+  .tweet_raw_data, .include_media_url=FALSE
 ){
   
-  # .tweet_data_raw <<- .tweet_data_raw#; stop()
+  # .tweet_raw_data <<- .tweet_raw_data#; stop()
   
-  if(nrow(.tweet_data_raw) == 0){
+  if(nrow(.tweet_raw_data) == 0){
     return(tidy_tweet_data_empty_df)
   }
   
   .tweet_data_main_nobs <- 
-    .tweet_data_raw |> 
+    .tweet_raw_data |> 
     purrr::pluck("tweet_data_main_raw", .default=list(tibble::tibble())) |> 
     purrr::map_int(nrow) |>
     sum()
@@ -30,7 +30,7 @@ prep_tweet_data_tidy <- function(
   }
   
   .tweet_data_incl_user_raw <- 
-    .tweet_data_raw |> 
+    .tweet_raw_data |> 
     dplyr::select(tweet_data_date, tweet_data_incl_user_raw) |> 
     tidyr::unnest(tidyselect::everything())
   
@@ -81,7 +81,7 @@ prep_tweet_data_tidy <- function(
   ##############################################################################
   
   .tweet_data_incl_tweet_raw <- 
-    .tweet_data_raw |>
+    .tweet_raw_data |>
     dplyr::select(tweet_data_date, tweet_data_incl_tweet_raw) |> 
     tidyr::unnest(tidyselect::everything())
   
@@ -112,7 +112,7 @@ prep_tweet_data_tidy <- function(
   # `%||%` <- rlang::`%||%`
   
   .tweet_data_incl_media <- 
-    .tweet_data_raw |>
+    .tweet_raw_data |>
     dplyr::select(tweet_data_incl_media_raw) |> 
     tidyr::unnest(tidyselect::everything()) |> 
     dplyr::transmute(
@@ -137,7 +137,7 @@ prep_tweet_data_tidy <- function(
   ##############################################################################
   
   .tweet_data_main_raw <- 
-    .tweet_data_raw |> 
+    .tweet_raw_data |> 
     dplyr::select(tweet_data_date, tweet_data_main_raw) |> 
     tidyr::unnest(tidyselect::everything()) |> 
     dplyr::group_by(id) |> 
@@ -310,8 +310,8 @@ prep_tweet_data_tidy <- function(
     
   }
   
-  .tweet_data_tidy <- dplyr::bind_rows(
-    tweet_data_tidy_skeleton,
+  .tweet_tidy_data <- dplyr::bind_rows(
+    tweet_tidy_data_skeleton,
     .tweet_data_flat |> 
       dplyr::left_join(.tweet_data_incl_user, by="user_id") |> 
       dplyr::left_join(.tweet_data_annotation, by="tweet_id") |> 
@@ -321,11 +321,11 @@ prep_tweet_data_tidy <- function(
       dplyr::left_join(.tweet_data_ref, by="tweet_id") 
     )
   
-  return(.tweet_data_tidy)
+  return(.tweet_tidy_data)
   
 }
 
-prep_tweet_data_raw <- function(
+prep_tweet_raw_data <- function(
     .tweet_list_raw, .tweet_data_query, .tweet_data_date=lubridate::now()
 ){
   
@@ -368,7 +368,7 @@ prep_tweet_data_raw <- function(
     .tweet_list_raw |> 
     purrr::pluck("meta", .default=list())
   
-  .tweet_data_raw <- tibble::tibble(
+  .tweet_raw_data <- tibble::tibble(
     tweet_data_date = .tweet_data_date,
     tweet_data_query = list(.tweet_data_query),
     tweet_data_main_raw = list(.tweet_data_main_raw),
@@ -379,6 +379,6 @@ prep_tweet_data_raw <- function(
     tweet_data_meta = list(.tweet_data_meta)
   )
   
-  return(.tweet_data_raw)
+  return(.tweet_raw_data)
   
 }

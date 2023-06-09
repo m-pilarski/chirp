@@ -19,7 +19,7 @@ fetch_tweet_id_raw <- function(
   stopifnot(is.character(.bearer_token))
   
   .tweet_id_vec_stack <- .tweet_id_vec
-  .tweet_data_raw <- tibble::tibble()
+  .tweet_raw_data <- tibble::tibble()
   repeat({
     
     .tweet_query <- form_tweet_query(
@@ -43,16 +43,16 @@ fetch_tweet_id_raw <- function(
       httr::content(as="text", encoding="UTF-8") |> 
       jsonlite::fromJSON(simplifyMatrix=FALSE)
     
-    .tweet_data_raw <- 
+    .tweet_raw_data <- 
       .tweet_list_raw |> 
-      prep_tweet_data_raw(.tweet_data_query=.tweet_query) |> 
-      dplyr::bind_rows(.tweet_data_raw)
+      prep_tweet_raw_data(.tweet_data_query=.tweet_query) |> 
+      dplyr::bind_rows(.tweet_raw_data)
     
     if(length(.tweet_id_vec_stack) == 0){break}
     
   })
   
-  return(.tweet_data_raw)
+  return(.tweet_raw_data)
   
 }
 
@@ -87,7 +87,7 @@ fetch_tweet_search_raw <- function(
     .incl_context_annotations = FALSE
   )
   
-  .tweet_data_raw <- tibble::tibble()
+  .tweet_raw_data <- tibble::tibble()
   repeat{
     
     .response <- GET_twitter_safely(
@@ -107,10 +107,10 @@ fetch_tweet_search_raw <- function(
       .tweet_list_raw, "meta", "next_token", .default=NULL
     )
     
-    .tweet_data_raw <- 
-      .tweet_data_raw |> 
+    .tweet_raw_data <- 
+      .tweet_raw_data |> 
       dplyr::bind_rows(
-        prep_tweet_data_raw(.tweet_list_raw, .tweet_data_query=.tweet_query)
+        prep_tweet_raw_data(.tweet_list_raw, .tweet_data_query=.tweet_query)
       )
     
     if(is.null(.next_token)){
@@ -121,7 +121,7 @@ fetch_tweet_search_raw <- function(
     
   }
   
-  return(.tweet_data_raw)
+  return(.tweet_raw_data)
   
 }
 
@@ -161,7 +161,7 @@ fetch_tweet_counts_raw <- function(
     .pars_static=list()
   )
   
-  .tweet_data_raw <- tibble::tibble()
+  .tweet_raw_data <- tibble::tibble()
   repeat{
     
     .response <- GET_twitter_safely(
@@ -181,10 +181,10 @@ fetch_tweet_counts_raw <- function(
       .tweet_list_raw, "meta", "next_token", .default=NULL
     )
     
-    .tweet_data_raw <<- .tweet_data_raw
+    .tweet_raw_data <<- .tweet_raw_data
     .tweet_list_raw<<-.tweet_list_raw
-    .tweet_data_raw <- 
-      .tweet_data_raw |> 
+    .tweet_raw_data <- 
+      .tweet_raw_data |> 
       dplyr::bind_rows(
         .tweet_list_raw |> 
           purrr::pluck("data") |> 
@@ -203,7 +203,7 @@ fetch_tweet_counts_raw <- function(
     
   }
   
-  return(.tweet_data_raw)
+  return(.tweet_raw_data)
   
 }
 
