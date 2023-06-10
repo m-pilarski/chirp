@@ -49,7 +49,7 @@ add_tweet_is_convers_start <- function(
         .tweet_id_vec = tweet_id_vec,
         .bearer_token=bearer_token
       ) |> 
-      prep_tweet_tidy_data() |> 
+      prep_tidy_data.tweet() |> 
       dplyr::inner_join(
         dplyr::select(.tweet_data_search, tweet_id, tweet_id_initial),
         by=c("tweet_reply_tweet_id"="tweet_id")

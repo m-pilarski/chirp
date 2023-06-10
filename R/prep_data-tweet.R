@@ -1,22 +1,80 @@
+prep_raw_data.tweet <- function(
+    .tweet_raw_list, .tweet_data_query, .tweet_data_date=lubridate::now()
+){
+  
+  .tweet_data_main_raw <- 
+    .tweet_raw_list |> 
+    purrr::pluck("data", .default=tibble::tibble()) |> 
+    jsonlite::flatten() |> 
+    janitor::clean_names() |> 
+    tibble::as_tibble() 
+  
+  .tweet_data_incl_user_raw <- 
+    .tweet_raw_list |> 
+    purrr::pluck("includes", "users", .default=tibble::tibble()) |> 
+    jsonlite::flatten() |> 
+    janitor::clean_names() |> 
+    tibble::as_tibble()
+  
+  .tweet_data_incl_tweet_raw <- 
+    .tweet_raw_list |> 
+    purrr::pluck("includes", "tweets", .default=tibble::tibble()) |> 
+    jsonlite::flatten() |> 
+    janitor::clean_names() |> 
+    tibble::as_tibble()
+  
+  .tweet_data_incl_media_raw <- 
+    .tweet_raw_list |> 
+    purrr::pluck("includes", "media", .default=tibble::tibble()) |> 
+    jsonlite::flatten() |> 
+    janitor::clean_names() |> 
+    tibble::as_tibble()
+  
+  .tweet_data_error_raw <- 
+    .tweet_raw_list |> 
+    purrr::pluck("errors", .default=tibble::tibble()) |> 
+    jsonlite::flatten() |> 
+    janitor::clean_names() |> 
+    tibble::as_tibble() 
+  
+  .tweet_data_meta <- 
+    .tweet_raw_list |> 
+    purrr::pluck("meta", .default=list())
+  
+  .tweet_raw_data <- tibble::tibble(
+    tweet_data_date = .tweet_data_date,
+    tweet_data_query = list(.tweet_data_query),
+    tweet_data_main_raw = list(.tweet_data_main_raw),
+    tweet_data_incl_tweet_raw = list(.tweet_data_incl_tweet_raw),
+    tweet_data_incl_user_raw = list(.tweet_data_incl_user_raw),
+    tweet_data_incl_media_raw = list(.tweet_data_incl_media_raw),
+    tweet_data_error = list(.tweet_data_error_raw),
+    tweet_data_meta = list(.tweet_data_meta)
+  )
+  
+  return(.tweet_raw_data)
+  
+}
+
 #' bla
 #'
-#' \code{prep_tweet_tidy_data} - Convert all Emojis to some ...
+#' \code{prep_tidy_data.tweet} - Convert all Emojis to some ...
 #'
 #' @param .tweet_raw_data ...
 #' @param .include_media_url ... \code{FALSE}
-#' @return \code{prep_tweet_tidy_data} - returns a ...
-#' @rdname prep_tweet_tidy_data
+#' @return \code{prep_tidy_data.tweet} - returns a ...
+#' @rdname prep_tidy_data.tweet
 #' @export
 #' @examples
 #' 1+1
-prep_tweet_tidy_data <- function(
+prep_tidy_data.tweet <- function(
   .tweet_raw_data, .include_media_url=FALSE
 ){
   
   # .tweet_raw_data <<- .tweet_raw_data#; stop()
   
   if(nrow(.tweet_raw_data) == 0){
-    return(tidy_tweet_data_empty_df)
+    return(tweet_tidy_data_skeleton)
   }
   
   .tweet_data_main_nobs <- 
@@ -26,7 +84,7 @@ prep_tweet_tidy_data <- function(
     sum()
   
   if(.tweet_data_main_nobs == 0){
-    return(tidy_tweet_data_empty_df)
+    return(tweet_tidy_data_skeleton)
   }
   
   .tweet_data_incl_user_raw <- 
@@ -141,7 +199,7 @@ prep_tweet_tidy_data <- function(
     dplyr::select(tweet_data_date, tweet_data_main_raw) |> 
     tidyr::unnest(tidyselect::everything()) |> 
     dplyr::group_by(id) |> 
-    dplyr::slice_max(tweet_data_date, with_ties=TRUE) |> 
+    dplyr::slice_max(tweet_data_date, with_ties=FALSE) |> 
     dplyr::ungroup()
   
   ##############################################################################
@@ -322,63 +380,5 @@ prep_tweet_tidy_data <- function(
     )
   
   return(.tweet_tidy_data)
-  
-}
-
-prep_tweet_raw_data <- function(
-    .tweet_list_raw, .tweet_data_query, .tweet_data_date=lubridate::now()
-){
-  
-  .tweet_data_main_raw <- 
-    .tweet_list_raw |> 
-    purrr::pluck("data", .default=tibble::tibble()) |> 
-    jsonlite::flatten() |> 
-    janitor::clean_names() |> 
-    tibble::as_tibble() 
-  
-  .tweet_data_incl_user_raw <- 
-    .tweet_list_raw |> 
-    purrr::pluck("includes", "users", .default=tibble::tibble()) |> 
-    jsonlite::flatten() |> 
-    janitor::clean_names() |> 
-    tibble::as_tibble()
-  
-  .tweet_data_incl_tweet_raw <- 
-    .tweet_list_raw |> 
-    purrr::pluck("includes", "tweets", .default=tibble::tibble()) |> 
-    jsonlite::flatten() |> 
-    janitor::clean_names() |> 
-    tibble::as_tibble()
-  
-  .tweet_data_incl_media_raw <- 
-    .tweet_list_raw |> 
-    purrr::pluck("includes", "media", .default=tibble::tibble()) |> 
-    jsonlite::flatten() |> 
-    janitor::clean_names() |> 
-    tibble::as_tibble()
-  
-  .tweet_data_error_raw <- 
-    .tweet_list_raw |> 
-    purrr::pluck("errors", .default=tibble::tibble()) |> 
-    jsonlite::flatten() |> 
-    janitor::clean_names() |> 
-    tibble::as_tibble() 
-  
-  .tweet_data_meta <- 
-    .tweet_list_raw |> 
-    purrr::pluck("meta", .default=list())
-  
-  .tweet_raw_data <- tibble::tibble(
-    tweet_data_date = .tweet_data_date,
-    tweet_data_query = list(.tweet_data_query),
-    tweet_data_main_raw = list(.tweet_data_main_raw),
-    tweet_data_incl_tweet_raw = list(.tweet_data_incl_tweet_raw),
-    tweet_data_incl_user_raw = list(.tweet_data_incl_user_raw),
-    tweet_data_incl_media_raw = list(.tweet_data_incl_media_raw),
-    tweet_data_error = list(.tweet_data_error_raw),
-    tweet_data_meta = list(.tweet_data_meta)
-  )
-  
-  return(.tweet_raw_data)
   
 }

@@ -3,7 +3,7 @@
 \name{fetch_tweet_id_raw}
 \alias{fetch_tweet_id_raw}
 \alias{fetch_tweet_search_raw}
-\alias{fetch_tweet_counts_raw}
+\alias{fetch_tweet_count_raw}
 \title{bla}
 \usage{
 fetch_tweet_id_raw(
@@ -15,7 +15,7 @@ fetch_tweet_id_raw(
 
 fetch_tweet_search_raw(.search_query, .date_new, .date_old, .bearer_token, ...)
 
-fetch_tweet_counts_raw(
+fetch_tweet_count_raw(
   .search_query,
   .date_new,
   .date_old,

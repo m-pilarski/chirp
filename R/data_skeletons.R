@@ -45,3 +45,11 @@ url_info_empty_df <- tibble::tibble(
   url_check_status = integer(),
   url_check_date = lubridate::as_datetime(character())
 )
+
+tweet_count_tidy_data_skeleton <- tibble::tibble(
+  tweet_query_search = character(),
+  tweet_date_created_start = lubridate::as_datetime(character()),
+  tweet_date_created_end = lubridate::as_datetime(character()),
+  tweet_count_date_observed = lubridate::as_datetime(character()),
+  tweet_count = integer()
+)

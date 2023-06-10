@@ -38,14 +38,14 @@ fetch_tweet_id_raw <- function(
       httr::timeout(60)
     )
     
-    .tweet_list_raw <- 
+    .tweet_raw_list <- 
       .response |> 
       httr::content(as="text", encoding="UTF-8") |> 
       jsonlite::fromJSON(simplifyMatrix=FALSE)
     
     .tweet_raw_data <- 
-      .tweet_list_raw |> 
-      prep_tweet_raw_data(.tweet_data_query=.tweet_query) |> 
+      .tweet_raw_list |> 
+      prep_raw_data.tweet(.tweet_data_query=.tweet_query) |> 
       dplyr::bind_rows(.tweet_raw_data)
     
     if(length(.tweet_id_vec_stack) == 0){break}
@@ -98,19 +98,19 @@ fetch_tweet_search_raw <- function(
       httr::timeout(60)
     )
     
-    .tweet_list_raw <- 
+    .tweet_raw_list <- 
       .response |> 
       httr::content(as="text", encoding="UTF-8") |> 
       jsonlite::fromJSON(simplifyMatrix=FALSE)
     
     .next_token <- purrr::pluck(
-      .tweet_list_raw, "meta", "next_token", .default=NULL
+      .tweet_raw_list, "meta", "next_token", .default=NULL
     )
     
     .tweet_raw_data <- 
       .tweet_raw_data |> 
       dplyr::bind_rows(
-        prep_tweet_raw_data(.tweet_list_raw, .tweet_data_query=.tweet_query)
+        prep_raw_data.tweet(.tweet_raw_list, .tweet_data_query=.tweet_query)
       )
     
     if(is.null(.next_token)){
@@ -141,7 +141,7 @@ fetch_tweet_search_raw <- function(
 #' @export
 #' @examples
 #' 1+1
-fetch_tweet_counts_raw <- function(
+fetch_tweet_count_raw <- function(
   .search_query, .date_new, .date_old, .resolution, .bearer_token, ...
 ){
   
@@ -172,28 +172,22 @@ fetch_tweet_counts_raw <- function(
       httr::timeout(60)
     )
     
-    .tweet_list_raw <- 
+    .tweet_raw_list <- 
       .response |> 
       httr::content(as="text", encoding="UTF-8") |> 
       jsonlite::fromJSON(simplifyMatrix=FALSE)
     
-    .next_token <- purrr::pluck(
-      .tweet_list_raw, "meta", "next_token", .default=NULL
-    )
-    
-    .tweet_raw_data <<- .tweet_raw_data
-    .tweet_list_raw<<-.tweet_list_raw
     .tweet_raw_data <- 
       .tweet_raw_data |> 
       dplyr::bind_rows(
-        .tweet_list_raw |> 
-          purrr::pluck("data") |> 
-          dplyr::transmute(
-            date_observation_start = parse_zulutime(start),
-            date_observation_end = parse_zulutime(end),
-            tweet_count = as.integer(tweet_count),
-          )
+        prep_raw_data.tweet_count(
+          .tweet_raw_list=.tweet_raw_list, .tweet_data_query=.tweet_query
+        )
       )
+    
+    .next_token <- purrr::pluck(
+      .tweet_raw_list, "meta", "next_token", .default=NULL
+    )
     
     if(is.null(.next_token)){
       break

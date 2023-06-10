@@ -7,8 +7,9 @@ gather_tweet_raw_data <- function(
   
   .fetch_fn_name <- deparse(substitute(.fetch_fn))
   .fetch_endpoint <- dplyr::case_when(
-    .fetch_fn_name == "fetch_tweet_id_raw" ~ "/2/tweets/search/all",
-    .fetch_fn_name == "fetch_tweet_search_raw" ~ "/2/tweets",
+    .fetch_fn_name == "fetch_tweet_id_raw" ~ "/2/tweets",
+    .fetch_fn_name == "fetch_tweet_search_raw" ~ "/2/tweets/search/all",
+    .fetch_fn_name == "fetch_tweet_count_raw" ~ "/2/tweets/counts/all",
     TRUE ~ NA_character_
   )
   

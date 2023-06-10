@@ -4,10 +4,10 @@
 \alias{add_tweet_is_convers_start}
 \title{bla}
 \usage{
-add_tweet_is_convers_start(.tweet_data_tidy, .na_to_false = FALSE)
+add_tweet_is_convers_start(.tweet_tidy_data, .na_to_false = FALSE)
 }
 \arguments{
-\item{.tweet_data_tidy}{...}
+\item{.tweet_tidy_data}{...}
 
 \item{.na_to_false}{... \code{FALSE}}
 }
