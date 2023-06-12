@@ -10,7 +10,7 @@
 #' @examples
 #' 1+1
 add_tweet_is_convers_start <- function(
-    .tweet_tidy_data, .na_to_false=FALSE
+  .tweet_tidy_data, .na_to_false=FALSE
 ){
   
   stopifnot(is.logical(.na_to_false) & length(.na_to_false) == 1)
@@ -120,17 +120,25 @@ get_url_info <- function(.url){
 
 ################################################################################
 
-list_get_url_info <- function(
-    .list_url_input, .url_info_db_path=fs::path(data_dir, "url_info_db.rds"),
-    .url_info_db_retry=FALSE
+add_tweet_url_info <- function(
+  .tweet_tidy_data, .url_info_db_path=fs::path(data_dir, "url_info_db.rds"),
+  .url_info_db_retry=FALSE
 ){
   
-  if(length(.list_url_input) == 0){return(list())}
+  stopifnot(is.logical(.na_to_false) & length(.na_to_false) == 1)
   
+  if(nrow(.tweet_tidy_data) == 0){
+    return(dplyr::mutate(.tweet_tidy_data, tweet_url_info = list()))
+  }
+
+  .list_url_input <- purrr::map(
+    tweet_url_base, purrr::pluck, "url_expanded", .default=character()
+  )
+
   stopifnot(
     all(purrr::map_lgl(purrr::compact(.list_url_input), is.character)),
     fs::dir_exists(fs::path_dir(.url_info_db_path)),
-    is.logical(.url_info_db_retry)
+    is.logical(.url_info_db_retry) & length(.url_info_db_retry) == 1
   )
   
   .list_url_frame <- 
@@ -163,7 +171,8 @@ list_get_url_info <- function(
     dplyr::bind_rows(.url_info_db_last) |> 
     readr::write_rds(.url_info_db_path)
   
-  .list_url_frame |> 
+  .tweet_url_info <- 
+    .list_url_frame |> 
     dplyr::left_join(.url_info_db, by="url_input") |> 
     tidyr::nest(url_info=-list_index) |> 
     tidyr::complete(
@@ -172,5 +181,11 @@ list_get_url_info <- function(
     dplyr::arrange(list_index) |> 
     dplyr::pull(url_info) |> 
     rlang::set_names(names(.list_url_input))
+  
+  .tweet_tidy_data <- 
+    .tweet_tidy_data |> 
+    tibble::add_column(tweet_url_info = .tweet_url_info)
+  
+  return(.tweet_tidy_data)
   
 }
