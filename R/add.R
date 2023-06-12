@@ -142,7 +142,7 @@ add_tweet_url_info <- function(
   }
 
   .list_url_input <- 
-    tweet_url_base |> 
+    .tweet_tidy_data |> 
     dplyr::pull(tweet_url_base) |> 
     purrr::map(purrr::pluck, "url_expanded", .default=character())
 
