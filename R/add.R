@@ -42,13 +42,8 @@ add_tweet_is_convers_start <- function(
     .tweet_data_search <- 
       .tweet_data_search |> 
       dplyr::filter(user_id == tweet_reply_user_id) |> 
-      dplyr::reframe(tweet_id_vec = burrr::chunk_vector(
-        tweet_reply_tweet_id, .n_elems=1e3
-      )) |> 
-      fetch_tweet_id_raw(
-        .tweet_id_vec = tweet_id_vec,
-        .bearer_token=bearer_token
-      ) |> 
+      dplyr::pull(tweet_reply_tweet_id) |> 
+      fetch_tweet_id_raw(.bearer_token=bearer_token) |> 
       prep_tidy_data.tweet() |> 
       dplyr::inner_join(
         dplyr::select(.tweet_data_search, tweet_id, tweet_id_initial),
