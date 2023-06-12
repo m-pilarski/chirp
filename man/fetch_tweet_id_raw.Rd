@@ -7,7 +7,7 @@
 \title{bla}
 \usage{
 fetch_tweet_id_raw(
-  .tweet_id_vec,
+  .tweet_id_vec = bit64::integer64(),
   .bearer_token,
   .tweet_query_pars_static = NULL,
   ...

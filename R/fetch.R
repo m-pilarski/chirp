@@ -12,7 +12,8 @@
 #' @examples
 #' 1+1
 fetch_tweet_id_raw <- function(
-    .tweet_id_vec, .bearer_token, .tweet_query_pars_static=NULL, ...
+  .tweet_id_vec=bit64::integer64(), .bearer_token, 
+  .tweet_query_pars_static=NULL, ...
 ){
   
   stopifnot(bit64::is.integer64(.tweet_id_vec))
