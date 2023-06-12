@@ -120,6 +120,18 @@ get_url_info <- function(.url){
 
 ################################################################################
 
+#' bla
+#'
+#' \code{add_tweet_url_info} - Convert all Emojis to some ...
+#'
+#' @param .tweet_tidy_data ...
+#' @param .url_info_db_path ... 
+#' @param .url_info_db_retry ...
+#' @return \code{add_tweet_url_info} - returns a ...
+#' @rdname add_tweet_is_convers_start
+#' @export
+#' @examples
+#' 1+1
 add_tweet_url_info <- function(
   .tweet_tidy_data, .url_info_db_path=fs::path(data_dir, "url_info_db.rds"),
   .url_info_db_retry=FALSE
