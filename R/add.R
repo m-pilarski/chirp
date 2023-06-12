@@ -137,8 +137,6 @@ add_tweet_url_info <- function(
   .url_info_db_retry=FALSE
 ){
   
-  stopifnot(is.logical(.na_to_false) & length(.na_to_false) == 1)
-  
   if(nrow(.tweet_tidy_data) == 0){
     return(dplyr::mutate(.tweet_tidy_data, tweet_url_info = list()))
   }
