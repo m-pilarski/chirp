@@ -141,9 +141,10 @@ add_tweet_url_info <- function(
     return(dplyr::mutate(.tweet_tidy_data, tweet_url_info = list()))
   }
 
-  .list_url_input <- purrr::map(
-    tweet_url_base, purrr::pluck, "url_expanded", .default=character()
-  )
+  .list_url_input <- 
+    tweet_url_base |> 
+    dplyr::pull(tweet_url_base) |> 
+    purrr::map(purrr::pluck, "url_expanded", .default=character())
 
   stopifnot(
     all(purrr::map_lgl(purrr::compact(.list_url_input), is.character)),
