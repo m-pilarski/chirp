@@ -1,19 +1,29 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 
 # chirp
 
 <!-- badges: start -->
-
 [![R-CMD-check](https://github.com/m-pilarski/chirp/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/m-pilarski/chirp/actions/workflows/check-standard.yaml)
 <!-- badges: end -->
 
-chirp provides tools to collect and process tweets in R 🦤
+chirp provides tools to collect and process tweets in R `r emoji::emoji("dodo")`
 
 ## Installation
 
-You can install the development version of chirp from
-[GitHub](https://github.com/) with:
+You can install the development version of chirp from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("remotes")
@@ -22,7 +32,9 @@ remotes::install_github("m-pilarski/chirp")
 
 ## Example
 
-``` r
+```{r example}
 library(chirp)
 ## basic example code
 ```
+
+
