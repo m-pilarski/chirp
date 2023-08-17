@@ -1,10 +1,7 @@
 gather_tweet_raw_data <- function(
   .tweet_data_scope_grid, .fetch_fn, .storage_dir, .bearer_token, ...
 ){
-  
-  # .tweet_data_scope_grid <<- .tweet_data_scope_grid
-  # .dots <<- enquos(...)
-  
+
   .fetch_fn_name <- stringr::str_remove(
     deparse(substitute(.fetch_fn)), "^chirp:::?"
   )
@@ -19,7 +16,6 @@ gather_tweet_raw_data <- function(
   stopifnot(!is.na(.fetch_endpoint))
   
   .tweet_data_scope_grid |> 
-    dplyr::transmute(...) |> 
     burrr::chunk_df(.n_rows=1) |> 
     burrr::best_map(function(..tweet_data_scope){
       
