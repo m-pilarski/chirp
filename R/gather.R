@@ -1,5 +1,5 @@
 gather_tweet_raw_data <- function(
-    .tweet_data_scope_grid, .fetch_fn, .storage_dir, .bearer_token, ...
+  .tweet_data_scope_grid, .fetch_fn, .storage_dir, .bearer_token, ...
 ){
   
   # .tweet_data_scope_grid <<- .tweet_data_scope_grid
@@ -10,6 +10,7 @@ gather_tweet_raw_data <- function(
     .fetch_fn_name == "fetch_tweet_id_raw" ~ "/2/tweets",
     .fetch_fn_name == "fetch_tweet_search_raw" ~ "/2/tweets/search/all",
     .fetch_fn_name == "fetch_tweet_count_raw" ~ "/2/tweets/counts/all",
+    .fetch_fn_name == "fetch_tweet_timeline_raw" ~ "/2/users/:id/tweets",
     TRUE ~ NA_character_
   )
   
@@ -17,8 +18,7 @@ gather_tweet_raw_data <- function(
   
   .tweet_data_scope_grid |> 
     dplyr::transmute(...) |> 
-    dplyr::rowwise() |> 
-    dplyr::group_split() |> 
+    burrr::chunk_df(.n_rows=1) |> 
     burrr::best_map(function(..tweet_data_scope){
       
       stopifnot(nrow(..tweet_data_scope) == 1)

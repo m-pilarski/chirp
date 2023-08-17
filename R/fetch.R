@@ -1,6 +1,6 @@
 #' bla
 #'
-#' \code{fetch_tweet_id_raw} - Convert all Emojis to some ...
+#' \code{fetch_tweet_id_raw} - ...
 #'
 #' @param .tweet_id_vec ...
 #' @param .bearer_token ... 
@@ -59,7 +59,7 @@ fetch_tweet_id_raw <- function(
 
 #' bla
 #'
-#' \code{fetch_tweet_search_raw} - Convert all Emojis to some ...
+#' \code{fetch_tweet_search_raw} - ...
 #'
 #' @param .search_query ...
 #' @param .date_new ...
@@ -129,7 +129,7 @@ fetch_tweet_search_raw <- function(
 
 #' bla
 #'
-#' \code{fetch_tweet_search_raw} - Convert all Emojis to some ...
+#' \code{fetch_tweet_count_raw} - ...
 #'
 #' @param .search_query ...
 #' @param .date_new ...
@@ -137,17 +137,19 @@ fetch_tweet_search_raw <- function(
 #' @param .resolution ...
 #' @param .bearer_token ... 
 #' @param ... ...
-#' @return \code{fetch_tweet_id_raw} - returns a ...
-#' @rdname fetch_tweet_id_raw
+#' @return \code{fetch_tweet_count_raw} - returns a ...
+#' @rdname fetch_tweet_count_raw
 #' @export
 #' @examples
 #' 1+1
 fetch_tweet_count_raw <- function(
-  .search_query, .date_new, .date_old, .resolution, .bearer_token, ...
+  .search_query, .date_new, .date_old, .resolution, .bearer_token, .scope="all",
+  ...
 ){
   
   stopifnot(
     .resolution %in% c("minute", "hour", "day"),
+    .scope %in% c("all", "recent"),
     all(sapply(list(.search_query, .bearer_token), is.character)),
     all(sapply(list(.date_new, .date_old), lubridate::is.POSIXct)),
     all(lengths(list(.search_query, .date_new, .date_old, .bearer_token)) == 1)
@@ -162,7 +164,12 @@ fetch_tweet_count_raw <- function(
     .pars_static=list()
   )
   
+  .tweet_url <- stringr::str_c(
+    "https://api.twitter.com/2/tweets/counts/", .scope
+  )
+  
   .tweet_raw_data <- tibble::tibble()
+  
   repeat{
     
     .response <- GET_twitter_safely(
@@ -178,13 +185,11 @@ fetch_tweet_count_raw <- function(
       httr::content(as="text", encoding="UTF-8") |> 
       jsonlite::fromJSON(simplifyMatrix=FALSE)
     
-    .tweet_raw_data <- 
-      .tweet_raw_data |> 
-      dplyr::bind_rows(
-        prep_raw_data.tweet_count(
-          .tweet_raw_list=.tweet_raw_list, .tweet_data_query=.tweet_query
-        )
+    .tweet_raw_data <- .tweet_raw_data |> dplyr::bind_rows(
+      prep_raw_data.tweet_count(
+        .tweet_raw_list=.tweet_raw_list, .tweet_data_query=.tweet_query
       )
+    )
     
     .next_token <- purrr::pluck(
       .tweet_raw_list, "meta", "next_token", .default=NULL
@@ -202,3 +207,79 @@ fetch_tweet_count_raw <- function(
   
 }
 
+#' bla
+#'
+#' \code{fetch_tweet_timeline_raw} - ...
+#'
+#' @param .user_id_vec ...
+#' @param .bearer_token ... 
+#' @param .tweet_query_pars_static ...
+#' @param ... ...
+#' @return \code{fetch_tweet_timeline_raw} - returns a ...
+#' @rdname fetch_tweet_timeline_raw
+#' @export
+#' @examples
+#' 1+1
+fetch_tweet_timeline_raw <- function(
+  .user_id_vec=bit64::integer64(), .bearer_token, 
+  .tweet_query_pars_static=NULL, ...
+){
+  
+  stopifnot(bit64::is.integer64(.user_id_vec))
+  stopifnot(is.character(.bearer_token))
+  
+  .user_id_vec_stack <- .user_id_vec
+  .tweet_raw_data <- tibble::tibble()
+  repeat({
+    
+    .tweet_query <- form_tweet_query(
+      .incl_context_annotations=TRUE, 
+      .pars_static=.tweet_query_pars_static
+    )
+    
+    .tweet_url <- stringr::str_c(
+      "https://api.twitter.com/2/users/", .user_id_vec_stack[1], "/tweets"
+    )
+    
+    .user_id_vec_stack <- .user_id_vec_stack[-1]
+    
+    repeat({
+      
+      .response <- GET_twitter_safely(
+        url=.tweet_url,
+        query=.tweet_query,
+        httr::add_headers(
+          Authorization=stringr::str_c("Bearer ", .bearer_token)
+        ),
+        httr::config(http_version=2),
+        httr::timeout(60)
+      )
+      
+      .tweet_raw_list <- 
+        .response |> 
+        httr::content(as="text", encoding="UTF-8") |> 
+        jsonlite::fromJSON(simplifyMatrix=FALSE)
+      
+      .tweet_raw_data <- .tweet_raw_data |> dplyr::bind_rows(
+        prep_raw_data.tweet(.tweet_raw_list, .tweet_data_query=.tweet_query)
+      )
+      
+      .next_token <- purrr::pluck(
+        .tweet_raw_list, "meta", "next_token", .default=NULL
+      )
+      
+      if(is.null(.next_token)){
+        break
+      }else{
+        .tweet_query[["next_token"]] <- .next_token
+      }
+    
+    })
+    
+    if(length(.user_id_vec_stack) == 0){break}
+    
+  })
+  
+  return(.tweet_raw_data)
+  
+}

@@ -70,7 +70,7 @@ form_tweet_query <- function(
   
   stopifnot(
     is.list(.pars_filter),
-    !is.null(names(.pars_filter)),
+    length(.pars_filter) == 0 | !is.null(names(.pars_filter)),
     !any(duplicated(names(.pars_filter))),
     .incl_context_annotations %in% c(FALSE, TRUE)
   )

@@ -3,7 +3,6 @@
 \name{fetch_tweet_id_raw}
 \alias{fetch_tweet_id_raw}
 \alias{fetch_tweet_search_raw}
-\alias{fetch_tweet_count_raw}
 \title{bla}
 \usage{
 fetch_tweet_id_raw(
@@ -14,15 +13,6 @@ fetch_tweet_id_raw(
 )
 
 fetch_tweet_search_raw(.search_query, .date_new, .date_old, .bearer_token, ...)
-
-fetch_tweet_count_raw(
-  .search_query,
-  .date_new,
-  .date_old,
-  .resolution,
-  .bearer_token,
-  ...
-)
 }
 \arguments{
 \item{.tweet_id_vec}{...}
@@ -38,12 +28,8 @@ fetch_tweet_count_raw(
 \item{.date_new}{...}
 
 \item{.date_old}{...}
-
-\item{.resolution}{...}
 }
 \value{
-\code{fetch_tweet_id_raw} - returns a ...
-
 \code{fetch_tweet_id_raw} - returns a ...
 
 \code{fetch_tweet_id_raw} - returns a ...
@@ -52,11 +38,8 @@ fetch_tweet_count_raw(
 \code{fetch_tweet_id_raw} - Convert all Emojis to some ...
 
 \code{fetch_tweet_search_raw} - Convert all Emojis to some ...
-
-\code{fetch_tweet_search_raw} - Convert all Emojis to some ...
 }
 \examples{
-1+1
 1+1
 1+1
 }
