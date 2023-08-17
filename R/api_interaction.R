@@ -63,7 +63,7 @@ GET_twitter_safely <- function(...){
 
 
 form_tweet_query <- function(
-    ..., .incl_context_annotations, .pars_static=NULL
+  ..., .incl_context_annotations, .pars_static=NULL
 ){
   
   .pars_filter <- list(...)

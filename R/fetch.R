@@ -222,8 +222,8 @@ fetch_tweet_count_raw <- function(
 #' @examples
 #' 1+1
 fetch_tweet_timeline_raw <- function(
-  .user_id_vec=bit64::integer64(), .bearer_token, 
-  .tweet_query_pars_static=NULL, ...
+  .user_id_vec=bit64::integer64(), .bearer_token, .tweet_count_max=Inf, 
+  .excl_replies=FALSE, .excl_retweets=FALSE, .tweet_query_pars_static=NULL, ...
 ){
   
   stopifnot(bit64::is.integer64(.user_id_vec))
@@ -238,12 +238,24 @@ fetch_tweet_timeline_raw <- function(
       .pars_static=.tweet_query_pars_static
     )
     
+    if(!"exclude" %in% names(.tweet_query)){
+      if(.excl_replies | .excl_retweets){
+        .tweet_query[["exclude"]] <- stringr::str_c(
+          if(.excl_replies){"replies"}, if(.excl_retweets){"retweets"},
+          sep=","
+        )
+      }
+    }else{
+      stop("\"exclude\" query parameter already present")
+    }
+    
     .tweet_url <- stringr::str_c(
       "https://api.twitter.com/2/users/", .user_id_vec_stack[1], "/tweets"
     )
     
     .user_id_vec_stack <- .user_id_vec_stack[-1]
     
+    .tweet_count <- 0L
     repeat({
       
       .response <- GET_twitter_safely(
@@ -265,16 +277,20 @@ fetch_tweet_timeline_raw <- function(
         prep_raw_data.tweet(.tweet_raw_list, .tweet_data_query=.tweet_query)
       )
       
+      .tweet_count <- .tweet_count + purrr::pluck(
+        .tweet_raw_list, "meta", "result_count", .default=0L
+      )
+      
       .next_token <- purrr::pluck(
         .tweet_raw_list, "meta", "next_token", .default=NULL
       )
       
-      if(is.null(.next_token)){
+      if(is.null(.next_token) | .tweet_count >= .tweet_count_max){
         break
       }else{
         .tweet_query[["next_token"]] <- .next_token
       }
-    
+      
     })
     
     if(length(.user_id_vec_stack) == 0){break}
