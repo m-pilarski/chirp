@@ -7,6 +7,9 @@
 fetch_tweet_timeline_raw(
   .user_id_vec = bit64::integer64(),
   .bearer_token,
+  .tweet_count_max = Inf,
+  .excl_replies = FALSE,
+  .excl_retweets = FALSE,
   .tweet_query_pars_static = NULL,
   ...
 )
@@ -15,6 +18,12 @@ fetch_tweet_timeline_raw(
 \item{.user_id_vec}{...}
 
 \item{.bearer_token}{...}
+
+\item{.tweet_count_max}{...}
+
+\item{.excl_replies}{...}
+
+\item{.excl_retweets}{...}
 
 \item{.tweet_query_pars_static}{...}
 
