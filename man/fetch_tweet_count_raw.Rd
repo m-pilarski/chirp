@@ -25,6 +25,8 @@ fetch_tweet_count_raw(
 
 \item{.bearer_token}{...}
 
+\item{.scope}{...}
+
 \item{...}{...}
 }
 \value{
