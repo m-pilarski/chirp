@@ -304,7 +304,7 @@ fetch_tweet_timeline_raw <- function(
       if(is.null(.next_token) | .tweet_count >= .tweet_count_max){
         break
       }else{
-        .tweet_query[["next_token"]] <- .next_token
+        .tweet_query[["pagination_token"]] <- .next_token
       }
       
     })
