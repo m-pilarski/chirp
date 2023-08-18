@@ -217,6 +217,7 @@ fetch_tweet_count_raw <- function(
 #' @param .tweet_count_max ...
 #' @param .excl_replies ... 
 #' @param .excl_retweets ...
+#' @param .until_tweet_id ...
 #' @param .tweet_query_pars_static ...
 #' @param ... ...
 #' @return \code{fetch_tweet_timeline_raw} - returns a ...
@@ -226,7 +227,8 @@ fetch_tweet_count_raw <- function(
 #' 1+1
 fetch_tweet_timeline_raw <- function(
   .user_id_vec=bit64::integer64(), .bearer_token, .tweet_count_max=Inf, 
-  .excl_replies=FALSE, .excl_retweets=FALSE, .tweet_query_pars_static=NULL, ...
+  .excl_replies=FALSE, .excl_retweets=FALSE, .until_tweet_id=NULL,
+  .tweet_query_pars_static=NULL, ...
 ){
   
   stopifnot(bit64::is.integer64(.user_id_vec))
@@ -241,15 +243,26 @@ fetch_tweet_timeline_raw <- function(
       .pars_static=.tweet_query_pars_static
     )
     
-    if(!"exclude" %in% names(.tweet_query)){
-      if(.excl_replies | .excl_retweets){
+    if(.excl_replies | .excl_retweets){
+      if(!"exclude" %in% names(.tweet_query)){
         .tweet_query[["exclude"]] <- stringr::str_c(
           if(.excl_replies){"replies"}, if(.excl_retweets){"retweets"},
           sep=","
         )
+      }else{
+        stop("\"exclude\" query parameter already present")
       }
-    }else{
-      stop("\"exclude\" query parameter already present")
+    }
+    
+    if(!is.null(.until_tweet_id)){
+      if(!"until_id" %in% names(.tweet_query)){
+        stopifnot(bit64::is.integer64(.until_tweet_id))
+        .tweet_query[["until_id"]] <- bit64::as.character.integer64(
+          .until_tweet_id
+        )
+      }else{
+        stop("\"until_id\" query parameter already present")
+      }
     }
     
     .tweet_url <- stringr::str_c(
