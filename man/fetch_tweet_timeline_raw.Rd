@@ -11,7 +11,7 @@ fetch_tweet_timeline_raw(
   .excl_replies = FALSE,
   .excl_retweets = FALSE,
   .until_tweet_id = NULL,
-  .page_size,
+  .page_size = 10L,
   .tweet_query_pars_static = NULL,
   ...
 )

@@ -229,7 +229,7 @@ fetch_tweet_count_raw <- function(
 fetch_tweet_timeline_raw <- function(
   .user_id_vec=bit64::integer64(), .bearer_token, .tweet_count_max=Inf, 
   .excl_replies=FALSE, .excl_retweets=FALSE, .until_tweet_id=NULL,
-  .page_size, .tweet_query_pars_static=NULL, ...
+  .page_size=10L, .tweet_query_pars_static=NULL, ...
 ){
   
   stopifnot(bit64::is.integer64(.user_id_vec))
