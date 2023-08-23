@@ -11,6 +11,7 @@ fetch_tweet_timeline_raw(
   .excl_replies = FALSE,
   .excl_retweets = FALSE,
   .until_tweet_id = NULL,
+  .page_size,
   .tweet_query_pars_static = NULL,
   ...
 )
@@ -27,6 +28,8 @@ fetch_tweet_timeline_raw(
 \item{.excl_retweets}{...}
 
 \item{.until_tweet_id}{...}
+
+\item{.page_size}{...}
 
 \item{.tweet_query_pars_static}{...}
 
