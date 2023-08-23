@@ -228,7 +228,7 @@ fetch_tweet_count_raw <- function(
 fetch_tweet_timeline_raw <- function(
   .user_id_vec=bit64::integer64(), .bearer_token, .tweet_count_max=Inf, 
   .excl_replies=FALSE, .excl_retweets=FALSE, .until_tweet_id=NULL,
-  .tweet_query_pars_static=NULL, ...
+  .page_size, .tweet_query_pars_static=NULL, ...
 ){
   
   stopifnot(bit64::is.integer64(.user_id_vec))
@@ -263,6 +263,13 @@ fetch_tweet_timeline_raw <- function(
       }else{
         stop("\"until_id\" query parameter already present")
       }
+    }
+    
+    if(!"max_results" %in% names(.tweet_query)){
+      stopifnot(is.integer(.page_size))
+      .tweet_query[["max_results"]] <- .page_size
+    }else{
+      stop("\"max_results\" query parameter already present")
     }
     
     .tweet_url <- stringr::str_c(
