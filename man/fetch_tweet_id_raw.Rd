@@ -12,7 +12,14 @@ fetch_tweet_id_raw(
   ...
 )
 
-fetch_tweet_search_raw(.search_query, .date_new, .date_old, .bearer_token, ...)
+fetch_tweet_search_raw(
+  .search_query,
+  .date_new,
+  .date_old,
+  .bearer_token,
+  .search_scope = "all",
+  ...
+)
 }
 \arguments{
 \item{.tweet_id_vec}{...}
@@ -28,6 +35,8 @@ fetch_tweet_search_raw(.search_query, .date_new, .date_old, .bearer_token, ...)
 \item{.date_new}{...}
 
 \item{.date_old}{...}
+
+\item{.search_scope}{}
 }
 \value{
 \code{fetch_tweet_id_raw} - returns a ...
