@@ -2,7 +2,6 @@
 % Please edit documentation in R/fetch.R
 \name{fetch_tweet_id_raw}
 \alias{fetch_tweet_id_raw}
-\alias{fetch_tweet_search_raw}
 \title{bla}
 \usage{
 fetch_tweet_id_raw(
@@ -11,8 +10,6 @@ fetch_tweet_id_raw(
   .tweet_query_pars_static = NULL,
   ...
 )
-
-fetch_tweet_search_raw(.search_query, .date_new, .date_old, .bearer_token, ...)
 }
 \arguments{
 \item{.tweet_id_vec}{...}
@@ -22,24 +19,13 @@ fetch_tweet_search_raw(.search_query, .date_new, .date_old, .bearer_token, ...)
 \item{.tweet_query_pars_static}{...}
 
 \item{...}{...}
-
-\item{.search_query}{...}
-
-\item{.date_new}{...}
-
-\item{.date_old}{...}
 }
 \value{
-\code{fetch_tweet_id_raw} - returns a ...
-
 \code{fetch_tweet_id_raw} - returns a ...
 }
 \description{
 \code{fetch_tweet_id_raw} - ...
-
-\code{fetch_tweet_search_raw} - ...
 }
 \examples{
-1+1
 1+1
 }
