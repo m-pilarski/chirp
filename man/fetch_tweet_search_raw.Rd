@@ -4,7 +4,14 @@
 \alias{fetch_tweet_search_raw}
 \title{bla}
 \usage{
-fetch_tweet_search_raw(.search_query, .date_new, .date_old, .bearer_token, ...)
+fetch_tweet_search_raw(
+  .search_query,
+  .date_new,
+  .date_old,
+  .bearer_token,
+  .search_scope = "all",
+  ...
+)
 }
 \arguments{
 \item{.search_query}{...}
@@ -12,6 +19,10 @@ fetch_tweet_search_raw(.search_query, .date_new, .date_old, .bearer_token, ...)
 \item{.date_new}{...}
 
 \item{.date_old}{...}
+
+\item{.bearer_token}{...}
+
+\item{.search_scope}{...}
 
 \item{...}{...}
 }

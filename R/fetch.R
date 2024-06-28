@@ -23,13 +23,15 @@ fetch_tweet_id_raw <- function(
   .tweet_raw_data <- tibble::tibble()
   repeat({
     
+    .max_results <- min(length(.tweet_id_vec_stack), 100)
+
     .tweet_query <- form_tweet_query(
-      ids=stringr::str_c(.tweet_id_vec_stack[c(1:100)], collapse=","), 
+      ids=stringr::str_c(.tweet_id_vec_stack[c(1:.max_results)], collapse=","), 
       .incl_context_annotations=TRUE, 
       .pars_static=.tweet_query_pars_static
     )
     
-    .tweet_id_vec_stack <- .tweet_id_vec_stack[-c(1:100)]
+    .tweet_id_vec_stack <- .tweet_id_vec_stack[-c(1:.max_results)]
     
     .response <- GET_twitter_safely(
       url="https://api.twitter.com/2/tweets",
@@ -63,7 +65,9 @@ fetch_tweet_id_raw <- function(
 #'
 #' @param .search_query ...
 #' @param .date_new ...
-#' @param .date_old ... 
+#' @param .date_old ...
+#' @param .bearer_token ... 
+#' @param .search_scope ...
 #' @param ... ...
 #' @return \code{fetch_tweet_search_raw} - returns a ...
 #' @rdname fetch_tweet_search_raw
@@ -71,13 +75,14 @@ fetch_tweet_id_raw <- function(
 #' @examples
 #' 1+1
 fetch_tweet_search_raw <- function(
-    .search_query, .date_new, .date_old, .bearer_token, ...
+  .search_query, .date_new, .date_old, .bearer_token, .search_scope="all", ...
 ){
 
   stopifnot(
     all(sapply(list(.search_query, .bearer_token), is.character)),
     all(sapply(list(.date_new, .date_old), lubridate::is.POSIXct)),
-    all(lengths(list(.search_query, .date_new, .date_old, .bearer_token)) == 1)
+    all(lengths(list(.search_query, .date_new, .date_old, .bearer_token)) == 1),
+    isTRUE(.search_scope %in% c("all", "recent"))
   )
   
   .tweet_query <- form_tweet_query(
@@ -92,7 +97,9 @@ fetch_tweet_search_raw <- function(
   repeat{
     
     .response <- GET_twitter_safely(
-      url="https://api.twitter.com/2/tweets/search/all",
+      url=stringr::str_glue(
+        "https://api.twitter.com/2/tweets/search/{.search_scope}/"
+      ),
       query=.tweet_query,
       httr::add_headers(Authorization=stringr::str_c("Bearer ", .bearer_token)),
       httr::config(http_version=2),
