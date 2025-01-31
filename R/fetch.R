@@ -264,9 +264,7 @@ fetch_tweet_timeline_raw <- function(
     if(!is.null(.until_tweet_id)){
       if(!"until_id" %in% names(.tweet_query)){
         stopifnot(bit64::is.integer64(.until_tweet_id))
-        .tweet_query[["until_id"]] <- bit64::as.character.integer64(
-          .until_tweet_id
-        )
+        .tweet_query[["until_id"]] <- bit64::as.character(.until_tweet_id)
       }else{
         stop("\"until_id\" query parameter already present")
       }
