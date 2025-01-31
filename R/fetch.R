@@ -87,10 +87,12 @@ fetch_tweet_search_raw <- function(
   
   .tweet_query <- form_tweet_query(
     query=.search_query,
-    start_time = format_zulutime(.date_old),
-    end_time = format_zulutime(.date_new), 
-    max_results = "100",
-    .incl_context_annotations = FALSE
+    start_time=format_zulutime(.date_old),
+    end_time=format_zulutime(.date_new), 
+    max_results=dplyr::case_match(
+      .search_scope, "all" ~ "500", "recent" ~ "100"
+    ),
+    .incl_context_annotations=FALSE
   )
   
   .tweet_raw_data <- tibble::tibble()
@@ -265,7 +267,7 @@ fetch_tweet_timeline_raw <- function(
     if(!is.null(.until_tweet_id)){
       if(!"until_id" %in% names(.tweet_query)){
         stopifnot(bit64::is.integer64(.until_tweet_id))
-        .tweet_query[["until_id"]] <- bit64::as.character(.until_tweet_id)
+        .tweet_query[["until_id"]] <- as.character(.until_tweet_id)
       }else{
         stop("\"until_id\" query parameter already present")
       }
