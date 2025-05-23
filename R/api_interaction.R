@@ -125,7 +125,7 @@ form_tweet_query <- function(
       ),
       place.fields = stringr::str_c(
         "contained_within,country,country_code,full_name,geo,id,name,place_type"
-      ),
+      )
     )
     
   }
