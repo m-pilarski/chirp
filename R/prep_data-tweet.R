@@ -30,6 +30,27 @@ prep_raw_data.tweet <- function(
     janitor::clean_names() |> 
     tibble::as_tibble()
   
+  .tweet_data_incl_places_raw <- 
+    .tweet_raw_list |> 
+    purrr::pluck("includes", "places", .default=tibble::tibble()) |> 
+    jsonlite::flatten() |> 
+    janitor::clean_names() |> 
+    tibble::as_tibble()
+  
+  .tweet_data_incl_polls_raw <- 
+    .tweet_raw_list |> 
+    purrr::pluck("includes", "polls", .default=tibble::tibble()) |> 
+    jsonlite::flatten() |> 
+    janitor::clean_names() |> 
+    tibble::as_tibble()
+  
+  .tweet_data_incl_topics_raw <- 
+    .tweet_raw_list |> 
+    purrr::pluck("includes", "topics", .default=tibble::tibble()) |> 
+    jsonlite::flatten() |> 
+    janitor::clean_names() |> 
+    tibble::as_tibble()
+  
   .tweet_data_error_raw <- 
     .tweet_raw_list |> 
     purrr::pluck("errors", .default=tibble::tibble()) |> 
@@ -48,6 +69,9 @@ prep_raw_data.tweet <- function(
     tweet_data_incl_tweet_raw = list(.tweet_data_incl_tweet_raw),
     tweet_data_incl_user_raw = list(.tweet_data_incl_user_raw),
     tweet_data_incl_media_raw = list(.tweet_data_incl_media_raw),
+    tweet_data_incl_places_raw = list(.tweet_data_incl_places_raw),
+    tweet_data_incl_polls_raw = list(.tweet_data_incl_polls_raw),
+    tweet_data_incl_topics_raw = list(.tweet_data_incl_topics_raw),
     tweet_data_error = list(.tweet_data_error_raw),
     tweet_data_meta = list(.tweet_data_meta)
   )
