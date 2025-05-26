@@ -25,10 +25,10 @@ fetch_tweet_id_raw <- function(
     
     .max_results <- min(length(.tweet_id_vec_stack), 100)
 
-    .tweet_query <- form_tweet_query(
+    .tweet_query <- prep_tweet_query(
       ids=stringr::str_c(.tweet_id_vec_stack[c(1:.max_results)], collapse=","), 
-      .incl_context_annotations=TRUE, 
-      .pars_static=.tweet_query_pars_static
+      .pars_static=.tweet_query_pars_static,
+      .object="tweet"
     )
     
     .tweet_id_vec_stack <- .tweet_id_vec_stack[-c(1:.max_results)]
@@ -85,14 +85,14 @@ fetch_tweet_search_raw <- function(
     isTRUE(.search_scope %in% c("all", "recent"))
   )
   
-  .tweet_query <- form_tweet_query(
+  .tweet_query <- prep_tweet_query(
     query=.search_query,
     start_time=format_zulutime(.date_old),
     end_time=format_zulutime(.date_new), 
     max_results=dplyr::case_match(
       .search_scope, "all" ~ "500", "recent" ~ "100"
     ),
-    .incl_context_annotations=FALSE
+    .object="tweet"
   )
   
   .tweet_raw_data <- tibble::tibble()
@@ -165,13 +165,12 @@ fetch_tweet_count_raw <- function(
     all(lengths(list(.search_query, .date_new, .date_old, .bearer_token)) == 1)
   )
   
-  .tweet_query <- form_tweet_query(
+  .tweet_query <- prep_tweet_query(
     query=.search_query,
     start_time = format_zulutime(.date_old),
     end_time = format_zulutime(.date_new), 
     granularity = .resolution,
-    .incl_context_annotations = FALSE,
-    .pars_static=list()
+    .object="search_count"
   )
   
   .tweet_url <- stringr::str_c(
@@ -248,9 +247,9 @@ fetch_tweet_timeline_raw <- function(
   .tweet_raw_data <- tibble::tibble()
   repeat({
     
-    .tweet_query <- form_tweet_query(
-      .incl_context_annotations=TRUE, 
-      .pars_static=.tweet_query_pars_static
+    .tweet_query <- prep_tweet_query(
+      .pars_static=.tweet_query_pars_static,
+      .object="tweet"
     )
     
     if(.excl_replies | .excl_retweets){
@@ -289,15 +288,14 @@ fetch_tweet_timeline_raw <- function(
     .tweet_count <- 0L
     repeat({
       
-      .response <- GET_twitter_safely(
-        url=.tweet_url,
-        query=.tweet_query,
-        httr::add_headers(
+      .response <- 
+        httr2::request(.tweet_url) |> 
+        httr2::req_url_query(.tweet_query)
+        httr2::req_headers(
           Authorization=stringr::str_c("Bearer ", .bearer_token)
-        ),
-        httr::config(http_version=2),
-        httr::timeout(60)
-      )
+        ) |> 
+        httr2::req_timeout(60) |> 
+        req_perform_twitter_safely()
       
       .tweet_raw_list <- 
         .response |> 

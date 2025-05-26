@@ -1,5 +1,5 @@
-pars_static_dict <- list(
-  search=list(
+query_pars_static_dict <- list(
+  tweet=list(
     tweet.fields = stringr::str_c(
       "article,attachments,author_id,card_uri,community_id,",
       "context_annotations,conversation_id,created_at,display_text_range,",
@@ -12,8 +12,8 @@ pars_static_dict <- list(
     expansions = stringr::str_c(
       "article.cover_media,article.media_entities,attachments.media_keys,",
       "attachments.media_source_tweet,attachments.poll_ids,author_id,",
-      "edit_history_tweet_ids,entities.mentions.username,geo.place_id,", 
-      "in_reply_to_user_id,entities.note.mentions.username,", 
+      "edit_history_tweet_ids,entities.mentions.username,geo.place_id,",
+      "in_reply_to_user_id,entities.note.mentions.username,",
       "referenced_tweets.id,referenced_tweets.id.attachments.media_keys,",
       "referenced_tweets.id.author_id"
     ),
@@ -36,7 +36,12 @@ pars_static_dict <- list(
     place.fields = stringr::str_c(
       "contained_within,country,country_code,full_name,geo,id,name,place_type"
     )
+  ),
+  search_count = list(
+    search_count.fields=stringr::str_c(
+      "end,start,tweet_count"
+    )
   )
 )
 
-usethis::use_data(pars_static_dict, overwrite=TRUE)
+usethis::use_data(query_pars_static_dict, overwrite=TRUE)
