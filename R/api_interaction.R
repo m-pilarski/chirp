@@ -174,7 +174,7 @@ form_tweet_query <- function(
   
 }
 
-prep_tweet_query <- function(..., .object, .pars_static=NULL){
+prep_tweet_query <- function(..., .object_class, .pars_static=NULL){
   
   .pars_filter <- list(...)
   
@@ -182,11 +182,10 @@ prep_tweet_query <- function(..., .object, .pars_static=NULL){
     is.list(.pars_filter),
     length(.pars_filter) == 0 | !is.null(names(.pars_filter)),
     !any(duplicated(names(.pars_filter))),
-    .incl_context_annotations %in% c(FALSE, TRUE)
   )
   
   if(is.null(.pars_static)){
-    .pars_static <- purrr::chuck(query_pars_static_dict, .object)
+    .pars_static <- purrr::chuck(query_pars_static_dict, .object_class)
   }
   
   .query <- c(.pars_filter, .pars_static)
