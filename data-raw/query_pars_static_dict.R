@@ -4,10 +4,9 @@ query_pars_static_dict <- list(
       "article,attachments,author_id,card_uri,community_id,",
       "context_annotations,conversation_id,created_at,display_text_range,",
       "edit_controls,edit_history_tweet_ids,entities,geo,id,",
-      "in_reply_to_user_id,lang,media_metadata,non_public_metrics,",
-      "note_tweet,organic_metrics,possibly_sensitive,promoted_metrics,",
-      "public_metrics,referenced_tweets,reply_settings,scopes,source,text,",
-      "withheld" 
+      "in_reply_to_user_id,lang,media_metadata,note_tweet,organic_metrics,",
+      "possibly_sensitive,promoted_metrics,public_metrics,referenced_tweets,",
+      "reply_settings,scopes,source,text,withheld" 
     ),
     expansions = stringr::str_c(
       "article.cover_media,article.media_entities,attachments.media_keys,",
@@ -18,9 +17,9 @@ query_pars_static_dict <- list(
       "referenced_tweets.id.author_id"
     ),
     media.fields = stringr::str_c(
-      "alt_text,duration_ms,height,media_key,non_public_metrics,",
-      "organic_metrics,preview_image_url,promoted_metrics,public_metrics,",
-      "type,url,variants,width"
+      "alt_text,duration_ms,height,media_key,organic_metrics,",
+      "preview_image_url,promoted_metrics,public_metrics,type,url,variants,",
+      "width"
     ),
     poll.fields = stringr::str_c(
       "duration_minutes,end_datetime,id,options,voting_status"
@@ -44,4 +43,4 @@ query_pars_static_dict <- list(
   )
 )
 
-usethis::use_data(query_pars_static_dict, overwrite=TRUE)
+usethis::use_data(query_pars_static_dict, overwrite=TRUE, internal=TRUE)
