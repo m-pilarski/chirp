@@ -181,7 +181,7 @@ prep_tweet_query <- function(..., .object_class, .pars_static=NULL){
   stopifnot(
     is.list(.pars_filter),
     length(.pars_filter) == 0 | !is.null(names(.pars_filter)),
-    !any(duplicated(names(.pars_filter))),
+    !any(duplicated(names(.pars_filter)))
   )
   
   if(is.null(.pars_static)){
