@@ -28,7 +28,7 @@ fetch_tweet_id_raw <- function(
     .tweet_query <- prep_tweet_query(
       ids=stringr::str_c(.tweet_id_vec_stack[c(1:.max_results)], collapse=","), 
       .pars_static=.tweet_query_pars_static,
-      .object="tweet"
+      .object_class="tweet"
     )
     
     .tweet_id_vec_stack <- .tweet_id_vec_stack[-c(1:.max_results)]
@@ -92,7 +92,7 @@ fetch_tweet_search_raw <- function(
     max_results=dplyr::case_match(
       .search_scope, "all" ~ "500", "recent" ~ "100"
     ),
-    .object="tweet"
+    .object_class="tweet"
   )
   
   .tweet_raw_data <- tibble::tibble()
@@ -170,7 +170,7 @@ fetch_tweet_count_raw <- function(
     start_time = format_zulutime(.date_old),
     end_time = format_zulutime(.date_new), 
     granularity = .resolution,
-    .object="search_count"
+    .object_class="search_count"
   )
   
   .tweet_url <- stringr::str_c(
@@ -249,7 +249,7 @@ fetch_tweet_timeline_raw <- function(
     
     .tweet_query <- prep_tweet_query(
       .pars_static=.tweet_query_pars_static,
-      .object="tweet"
+      .object_class="tweet"
     )
     
     if(.excl_replies | .excl_retweets){
