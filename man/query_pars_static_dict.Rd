@@ -5,15 +5,23 @@
 \alias{query_pars_static_dict}
 \title{Static Query Parameters}
 \format{
-An object of class \code{list} of length 2.
+\subsection{\code{query_pars_static_dict}}{
+
+A list:
+\describe{
+\item{names}{...}
+\item{values}{...}
+...
+}
+}
+}
+\source{
+\url{https://docs.x.com/x-api}
 }
 \usage{
 query_pars_static_dict
 }
 \description{
-Static Query Parameters
-}
-\references{
-\url{https://docs.x.com/x-api}
+...
 }
 \keyword{datasets}
