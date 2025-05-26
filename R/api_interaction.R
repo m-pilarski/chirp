@@ -92,7 +92,8 @@ req_perform_twitter_safely <- function(.req){
           httr2::resp_headers() |>
           purrr::pluck("x-rate-limit-reset") |> 
           bit64::as.integer64() |> 
-          lubridate::as_datetime(origin="1970-01-01 UTC")
+          lubridate::seconds() |> 
+          (`+`)(lubridate::as_datetime(origin="1970-01-01 UTC"))
         message(
           "Waiting for the rate limit reset on ", 
           lubridate::with_tz(.rate_limit_reset, tzone="")
