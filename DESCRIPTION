@@ -32,7 +32,8 @@ Imports:
     tidyr,
     tidyselect,
     graphics,
-    methods
+    methods,
+    httr2
 Remotes: 
     m-pilarski/burrr
 Suggests: 

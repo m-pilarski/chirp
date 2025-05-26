@@ -186,9 +186,7 @@ prep_tweet_query <- function(..., .object, .pars_static=NULL){
   )
   
   if(is.null(.pars_static)){
-    
     .pars_static <- purrr::chuck(query_pars_static_dict, .object)
-    
   }
   
   .query <- c(.pars_filter, .pars_static)
