@@ -33,13 +33,15 @@ fetch_tweet_id_raw <- function(
     
     .tweet_id_vec_stack <- .tweet_id_vec_stack[-c(1:.max_results)]
     
-    .response <- GET_twitter_safely(
-      url="https://api.twitter.com/2/tweets",
-      query=.tweet_query,
-      httr::add_headers(Authorization=stringr::str_c("Bearer ", .bearer_token)),
-      httr::config(http_version=2),
-      httr::timeout(60)
-    )
+    .response <- 
+      httr2::request("https://api.twitter.com/2") |>
+      httr2::req_url_path_append("tweets") |>
+      httr2::req_url_query(.tweet_query)
+      httr2::req_headers(
+        Authorization=stringr::str_c("Bearer ", .bearer_token)
+      ) |> 
+      httr2::req_timeout(60) |> 
+      req_perform_twitter_safely()
     
     .tweet_raw_list <- 
       .response |> 
@@ -98,16 +100,17 @@ fetch_tweet_search_raw <- function(
   .tweet_raw_data <- tibble::tibble()
   repeat{
     
-    .response <- GET_twitter_safely(
-      url=stringr::str_glue(
-        "https://api.twitter.com/2/tweets/search/{.search_scope}/"
-      ),
-      query=.tweet_query,
-      httr::add_headers(Authorization=stringr::str_c("Bearer ", .bearer_token)),
-      httr::config(http_version=2),
-      httr::timeout(60)
-    )
-    
+    .response <-     
+      httr2::request("https://api.twitter.com/2") |>
+      httr2::req_url_path_append("tweets/search") |>
+      httr2::req_url_path_append(.search_scope) |>
+      httr2::req_url_query(.tweet_query)
+      httr2::req_headers(
+        Authorization=stringr::str_c("Bearer ", .bearer_token)
+      ) |> 
+      httr2::req_timeout(60) |> 
+      req_perform_twitter_safely()
+
     .tweet_raw_list <- 
       .response |> 
       httr::content(as="text", encoding="UTF-8") |> 
@@ -145,7 +148,7 @@ fetch_tweet_search_raw <- function(
 #' @param .date_old ... 
 #' @param .resolution ...
 #' @param .bearer_token ... 
-#' @param .scope ... 
+#' @param .search_scope ... 
 #' @param ... ...
 #' @return \code{fetch_tweet_count_raw} - returns a ...
 #' @rdname fetch_tweet_count_raw
@@ -153,13 +156,13 @@ fetch_tweet_search_raw <- function(
 #' @examples
 #' 1+1
 fetch_tweet_count_raw <- function(
-  .search_query, .date_new, .date_old, .resolution, .bearer_token, .scope="all",
-  ...
+  .search_query, .date_new, .date_old, .resolution, .bearer_token, 
+  .search_scope="all", ...
 ){
   
   stopifnot(
     .resolution %in% c("minute", "hour", "day"),
-    .scope %in% c("all", "recent"),
+    .search_scope %in% c("all", "recent"),
     all(sapply(list(.search_query, .bearer_token), is.character)),
     all(sapply(list(.date_new, .date_old), lubridate::is.POSIXct)),
     all(lengths(list(.search_query, .date_new, .date_old, .bearer_token)) == 1)
@@ -173,21 +176,20 @@ fetch_tweet_count_raw <- function(
     .object_class="search_count"
   )
   
-  .tweet_url <- stringr::str_c(
-    "https://api.twitter.com/2/tweets/counts/", .scope
-  )
-  
   .tweet_raw_data <- tibble::tibble()
   
   repeat{
     
-    .response <- GET_twitter_safely(
-      url="https://api.twitter.com/2/tweets/counts/all",
-      query=.tweet_query,
-      httr::add_headers(Authorization=stringr::str_c("Bearer ", .bearer_token)),
-      httr::config(http_version=2),
-      httr::timeout(60)
-    )
+    .response <- 
+      httr2::request("https://api.twitter.com/2") |>
+      httr2::req_url_path_append("tweets/counts") |>
+      httr2::req_url_path_append(.search_scope) |>
+      httr2::req_url_query(.tweet_query)
+      httr2::req_headers(
+        Authorization=stringr::str_c("Bearer ", .bearer_token)
+      ) |> 
+      httr2::req_timeout(60) |> 
+      req_perform_twitter_safely()
     
     .tweet_raw_list <- 
       .response |> 
@@ -289,8 +291,10 @@ fetch_tweet_timeline_raw <- function(
     repeat({
       
       .response <- 
-        httr2::request(.tweet_url) |> 
-        httr2::req_url_query(.tweet_query)
+        httr2::request("https://api.twitter.com/2") |>
+        httr2::req_url_path_append("users") |>
+        httr2::req_url_path_append(as.character(.user_id_vec_stack[1])) |>
+        httr2::req_url_path_append("tweets") |>
         httr2::req_headers(
           Authorization=stringr::str_c("Bearer ", .bearer_token)
         ) |> 
