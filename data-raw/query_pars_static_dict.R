@@ -1,5 +1,6 @@
-# all possible fields except for `non_public_metrics`, `organic_metrics`, 
-# `promoted_metrics`.
+# all possible fields except for:
+# `non_public_metrics`, `organic_metrics`, `promoted_metrics` ~> error
+# `confirmed_email` ~> empty `includes.users`
 query_pars_static_dict <- list(
   tweet=list(
     tweet.fields = stringr::str_c(
@@ -26,9 +27,9 @@ query_pars_static_dict <- list(
       "duration_minutes,end_datetime,id,options,voting_status"
     ),
     user.fields = stringr::str_c(
-      "affiliation,confirmed_email,connection_status,created_at,description,",
-      "entities,id,is_identity_verified,location,most_recent_tweet_id,name,",
-      "parody,pinned_tweet_id,profile_banner_url,profile_image_url,protected,",
+      "affiliation,connection_status,created_at,description,entities,id,",
+      "is_identity_verified,location,most_recent_tweet_id,name,parody,",
+      "pinned_tweet_id,profile_banner_url,profile_image_url,protected,",
       "public_metrics,receives_your_dm,subscription,subscription_type,url,",
       "username,verified,verified_followers_count,verified_type,withheld"
     ),
@@ -84,5 +85,3 @@ list(old=tweet_pars_old, new=tweet_pars_new) |>
   }) |> 
   purrr::list_c() |> 
   (\(.list){.list[order(names(.list))]})()
-  
-  stringi::stri_split_fixed(",") |> 
