@@ -69,7 +69,15 @@ req_perform_twitter_safely <- function(.req){
     .cond <- NULL
     
     tryCatch(
-      expr={.response <- httr2::req_perform(.req)},
+      expr={
+        .response <- .req |> 
+          httr2::req_error(
+            is_error=\(..resp){
+              !isTRUE(httr2::resp_status(..resp) %in% c(200, 429))
+            }
+          ) |> 
+          httr2::req_perform()
+      },
       error=function(..e){.cond <<- ..e},
       warning=function(..w){.cond <<- ..w}
     )
