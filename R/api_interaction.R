@@ -101,7 +101,7 @@ req_perform_twitter_safely <- function(.req){
           purrr::pluck("x-rate-limit-reset") |> 
           bit64::as.integer64() |> 
           lubridate::seconds() |> 
-          (`+`)(lubridate::as_datetime(origin="1970-01-01 UTC"))
+          (`+`)(lubridate::ymd_hms("1970-01-01T00:00:00", tz="UTC"))
         message(
           "Waiting for the rate limit reset on ", 
           lubridate::with_tz(.rate_limit_reset, tzone="")
