@@ -10,7 +10,7 @@ fetch_tweet_count_raw(
   .date_old,
   .resolution,
   .bearer_token,
-  .scope = "all",
+  .search_scope = "all",
   ...
 )
 }
@@ -25,7 +25,7 @@ fetch_tweet_count_raw(
 
 \item{.bearer_token}{...}
 
-\item{.scope}{...}
+\item{.search_scope}{...}
 
 \item{...}{...}
 }
