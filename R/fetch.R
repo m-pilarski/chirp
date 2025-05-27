@@ -45,8 +45,7 @@ fetch_tweet_id_raw <- function(
     
     .tweet_raw_list <- 
       .response |> 
-      httr::content(as="text", encoding="UTF-8") |> 
-      jsonlite::fromJSON(simplifyMatrix=FALSE)
+      httr2::resp_body_json(encoding="UTF-8", simplifyMatrix=FALSE)
     
     .tweet_raw_data <- 
       .tweet_raw_list |> 
@@ -113,8 +112,7 @@ fetch_tweet_search_raw <- function(
 
     .tweet_raw_list <- 
       .response |> 
-      httr::content(as="text", encoding="UTF-8") |> 
-      jsonlite::fromJSON(simplifyMatrix=FALSE)
+      httr2::resp_body_json(encoding="UTF-8", simplifyMatrix=FALSE)
     
     .next_token <- purrr::pluck(
       .tweet_raw_list, "meta", "next_token", .default=NULL
@@ -193,8 +191,7 @@ fetch_tweet_count_raw <- function(
     
     .tweet_raw_list <- 
       .response |> 
-      httr::content(as="text", encoding="UTF-8") |> 
-      jsonlite::fromJSON(simplifyMatrix=FALSE)
+      httr2::resp_body_json(encoding="UTF-8", simplifyMatrix=FALSE)
     
     .tweet_raw_data <- .tweet_raw_data |> dplyr::bind_rows(
       prep_raw_data.tweet_count(
@@ -281,10 +278,6 @@ fetch_tweet_timeline_raw <- function(
       stop("\"max_results\" query parameter already present")
     }
     
-    .tweet_url <- stringr::str_c(
-      "https://api.twitter.com/2/users/", .user_id_vec_stack[1], "/tweets"
-    )
-    
     .user_id_vec_stack <- .user_id_vec_stack[-1]
     
     .tweet_count <- 0L
@@ -303,8 +296,7 @@ fetch_tweet_timeline_raw <- function(
       
       .tweet_raw_list <- 
         .response |> 
-        httr::content(as="text", encoding="UTF-8") |> 
-        jsonlite::fromJSON(simplifyMatrix=FALSE)
+        httr2::resp_body_json(encoding="UTF-8", simplifyMatrix=FALSE)
       
       .tweet_raw_data <- .tweet_raw_data |> dplyr::bind_rows(
         prep_raw_data.tweet(.tweet_raw_list, .tweet_data_query=.tweet_query)
