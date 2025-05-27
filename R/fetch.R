@@ -36,7 +36,7 @@ fetch_tweet_id_raw <- function(
     .response <- 
       httr2::request("https://api.twitter.com/2") |>
       httr2::req_url_path_append("tweets") |>
-      httr2::req_url_query(.tweet_query)
+      httr2::req_url_query(.tweet_query) |>
       httr2::req_headers(
         Authorization=stringr::str_c("Bearer ", .bearer_token)
       ) |> 
@@ -104,7 +104,7 @@ fetch_tweet_search_raw <- function(
       httr2::request("https://api.twitter.com/2") |>
       httr2::req_url_path_append("tweets/search") |>
       httr2::req_url_path_append(.search_scope) |>
-      httr2::req_url_query(.tweet_query)
+      httr2::req_url_query(.tweet_query) |>
       httr2::req_headers(
         Authorization=stringr::str_c("Bearer ", .bearer_token)
       ) |> 
@@ -184,7 +184,7 @@ fetch_tweet_count_raw <- function(
       httr2::request("https://api.twitter.com/2") |>
       httr2::req_url_path_append("tweets/counts") |>
       httr2::req_url_path_append(.search_scope) |>
-      httr2::req_url_query(.tweet_query)
+      httr2::req_url_query(.tweet_query) |>
       httr2::req_headers(
         Authorization=stringr::str_c("Bearer ", .bearer_token)
       ) |> 
