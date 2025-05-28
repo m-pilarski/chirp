@@ -291,6 +291,7 @@ fetch_tweet_timeline_raw <- function(
         httr2::req_url_path_append("users") |>
         httr2::req_url_path_append(as.character(.user_id_vec_stack[1])) |>
         httr2::req_url_path_append("tweets") |>
+        httr2::req_url_query(!!!.tweet_query) |> 
         httr2::req_headers(
           Authorization=stringr::str_c("Bearer ", .bearer_token)
         ) |> 
