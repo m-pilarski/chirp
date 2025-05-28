@@ -26,12 +26,12 @@ fetch_tweet_id_raw <- function(
     .max_results <- min(length(.tweet_id_vec_stack), 100)
 
     .tweet_query <- prep_tweet_query(
-      ids=stringr::str_c(.tweet_id_vec_stack[c(1:.max_results)], collapse=","), 
+      ids=stringr::str_c(head(.tweet_id_vec_stack, .max_results), collapse=","), 
       .pars_static=.tweet_query_pars_static,
       .object_class="tweet"
     )
     
-    .tweet_id_vec_stack <- .tweet_id_vec_stack[-c(1:.max_results)]
+    .tweet_id_vec_stack <- tail(.tweet_id_vec_stack, -.max_results)
     
     .response <- 
       httr2::request("https://api.twitter.com/2") |>
