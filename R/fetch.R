@@ -281,7 +281,8 @@ fetch_tweet_timeline_raw <- function(
       stop("\"max_results\" query parameter already present")
     }
     
-    .user_id_vec_stack <- .user_id_vec_stack[-1]
+    .user_id <- head(.user_id_vec_stack, 1)
+    .user_id_vec_stack <- tail(.user_id_vec_stack, -1)
     
     .tweet_count <- 0L
     repeat({
@@ -289,7 +290,7 @@ fetch_tweet_timeline_raw <- function(
       .response <- 
         httr2::request("https://api.twitter.com/2") |>
         httr2::req_url_path_append("users") |>
-        httr2::req_url_path_append(as.character(.user_id_vec_stack[1])) |>
+        httr2::req_url_path_append(as.character(.user_id)) |>
         httr2::req_url_path_append("tweets") |>
         httr2::req_url_query(!!!.tweet_query) |> 
         httr2::req_headers(
