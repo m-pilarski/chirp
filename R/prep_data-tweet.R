@@ -86,19 +86,26 @@ prep_raw_data.tweet <- function(
 #'
 #' @param .tweet_raw_data ...
 #' @param .include_media_url ... \code{FALSE}
+#' @param .get_all output clean data for all included posts (not just directly requested; "main") \code{FALSE}
 #' @return \code{prep_tidy_data.tweet} - returns a ...
 #' @rdname prep_tidy_data.tweet
 #' @export
 #' @examples
 #' 1+1
 prep_tidy_data.tweet <- function(
-  .tweet_raw_data, .include_media_url=FALSE
+  .tweet_raw_data, .include_media_url=FALSE, .get_all=FALSE
 ){
   
   # .tweet_raw_data <<- .tweet_raw_data#; stop()
   
   if(nrow(.tweet_raw_data) == 0){
     return(tweet_tidy_data_skeleton)
+  }
+ 
+  if(.get_all){
+    .tweet_raw_data <- dplyr::mutate(
+      .tweet_raw_data, tweet_data_main_raw = tweet_data_incl_tweet_raw
+    )
   }
   
   .tweet_data_main_nobs <- 
@@ -222,10 +229,8 @@ prep_tidy_data.tweet <- function(
     .tweet_raw_data |> 
     dplyr::select(tweet_data_date, tweet_data_main_raw) |> 
     tidyr::unnest(tidyselect::everything()) |> 
-    dplyr::group_by(id) |> 
-    dplyr::slice_max(tweet_data_date, with_ties=FALSE) |> 
-    dplyr::ungroup()
-  
+    dplyr::slice_max(order_by=tweet_data_date, with_ties=FALSE, by=id)
+
   ##############################################################################
   
   .tweet_data_flat <- 

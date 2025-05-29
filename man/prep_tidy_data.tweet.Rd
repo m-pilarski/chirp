@@ -5,7 +5,11 @@
 \alias{prep_tidy_data.tweet_count}
 \title{bla}
 \usage{
-prep_tidy_data.tweet(.tweet_raw_data, .include_media_url = FALSE)
+prep_tidy_data.tweet(
+  .tweet_raw_data,
+  .include_media_url = FALSE,
+  .get_all = FALSE
+)
 
 prep_tidy_data.tweet_count(.tweet_raw_data)
 }
@@ -13,6 +17,8 @@ prep_tidy_data.tweet_count(.tweet_raw_data)
 \item{.tweet_raw_data}{...}
 
 \item{.include_media_url}{... \code{FALSE}}
+
+\item{.get_all}{output clean data for all included posts (not just directly requested; "main") \code{FALSE}}
 }
 \value{
 \code{prep_tidy_data.tweet} - returns a ...

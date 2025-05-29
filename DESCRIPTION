@@ -33,7 +33,8 @@ Imports:
     tidyselect,
     graphics,
     methods,
-    httr2
+    httr2,
+    utils
 Remotes: 
     m-pilarski/burrr
 Suggests: 
