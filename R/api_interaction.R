@@ -91,7 +91,13 @@ req_perform_twitter_safely <- function(.req){
       TRUE ~ "Unknown Condition"
     )
     .cond_message <- purrr::pluck(.cond, "message", .default="")
-    .cond_is_retry <- stringr::str_detect(.cond_message, "rate_limit")
+    .cond_is_retry <- purrr::reduce(
+      .x=list(
+        stringr::str_detect(.cond_message, "rate_limit"),
+        stringr::str_detect(.cond_message, "HTTP 503 Service Unavailable")
+      ),
+      .f=`|`
+    )
     
     if(.response_is_valid & !.cond_is_retry){
       if(httr2::resp_status(.response) == 429){
