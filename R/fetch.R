@@ -92,7 +92,7 @@ fetch_tweet_search_raw <- function(
     start_time=format_zulutime(.date_old),
     end_time=format_zulutime(.date_new), 
     max_results=dplyr::case_match(
-      .search_scope, "all" ~ "500", "recent" ~ "100"
+      .search_scope, "all" ~ "100", "recent" ~ "100"
     ),
     .object_class="tweet"
   )
