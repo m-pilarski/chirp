@@ -236,7 +236,13 @@ prep_tidy_data.tweet <- function(
     dplyr::transmute(
       tweet_id = bit64::as.integer64(id),
       lang,
-      tweet_text = note_tweet_text,
+      tweet_text = local({
+        .text_long <- purrr::pluck(
+          .data, "note_tweet_text", .default=rep(NA_character_, dplyr::n())
+        ) 
+        .text_long[is.na(.text_long)] <- text[is.na(.text_long)]
+        return(.text_long)
+      }),
       user_id = bit64::as.integer64(author_id),
       convers_id = bit64::as.integer64(conversation_id),
       date_created = parse_zulutime(created_at),
