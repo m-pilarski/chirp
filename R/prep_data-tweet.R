@@ -96,8 +96,6 @@ prep_tidy_data.tweet <- function(
   .tweet_raw_data, .include_media_url=FALSE, .get_all=FALSE
 ){
   
-  # .tweet_raw_data <<- .tweet_raw_data#; stop()
-  
   if(nrow(.tweet_raw_data) == 0){
     return(tweet_tidy_data_skeleton)
   }
@@ -238,7 +236,7 @@ prep_tidy_data.tweet <- function(
     dplyr::transmute(
       tweet_id = bit64::as.integer64(id),
       lang,
-      text,
+      tweet_text = note_tweet_text,
       user_id = bit64::as.integer64(author_id),
       convers_id = bit64::as.integer64(conversation_id),
       date_created = parse_zulutime(created_at),
@@ -291,7 +289,10 @@ prep_tidy_data.tweet <- function(
       tweet_id=bit64::integer64(), 
       tweet_reply_tweet_id=bit64::integer64(),
       tweet_reply_user_id=bit64::integer64(),
-      tweet_reply_user_screen_name=character()
+      tweet_reply_user_screen_name=character(),
+      tweet_quote_tweet_id=bit64::integer64(),
+      tweet_quote_user_id=bit64::integer64(),
+      tweet_quote_user_screen_name=character()
     )
     
   }
