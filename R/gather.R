@@ -24,7 +24,7 @@ gather_tweet_raw_data <- function(
       ..data_path <- fs::path(
         fs::dir_create(.storage_dir), 
         digest::digest(list(.fetch_endpoint, ..filtering_pars)), 
-        ext="qs"
+        ext="qs2"
       )
       
       if(!fs::file_exists(..data_path)){
@@ -40,11 +40,11 @@ gather_tweet_raw_data <- function(
           tweet_raw_data = list(..tweet_raw_data)
         )
         
-        qs::qsave(..tweet_data_gathered, ..data_path)
+        qs2::qs_save(..tweet_data_gathered, ..data_path)
         
       }else{
         
-        ..tweet_data_gathered <- qs::qread(..data_path)
+        ..tweet_data_gathered <- qs2::qs_read(..data_path)
         
       }
       

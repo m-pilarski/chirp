@@ -24,7 +24,7 @@ Imports:
     lubridate,
     naptime,
     purrr,
-    qs,
+    qs2,
     stringr,
     readr,
     rlang,
